@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+    <item
+        android:id="@+id/favorites"
+        android:enabled="true"
+        android:icon="@drawable/favorites"
+        android:title="Favorites"/>
+    <item
+        android:id="@+id/ratings"
+        android:enabled="true"
+        android:icon="@drawable/ratings"
+        android:title="Ratings"/>
+</menu>

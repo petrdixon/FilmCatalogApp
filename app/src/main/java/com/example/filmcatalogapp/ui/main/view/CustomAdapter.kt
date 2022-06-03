@@ -1,5 +1,6 @@
 package com.example.filmcatalogapp.ui.main.view
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
+import com.example.filmcatalogapp.ui.main.model.Repository
 
 // адаптер для RecyclerView
 
-class CustomAdapter(private val mList: List<ItemsViewModel>) :
+class CustomAdapter(private val mList: List<ItemsViewModel>, private var onItemViewClickListener:
+HomeFragment.OnItemViewClickListener?) :
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
-    var listener: OnItemViewClickListener? = null
+//    var listener: OnItemViewClickListener? = null
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,15 +52,28 @@ class CustomAdapter(private val mList: List<ItemsViewModel>) :
 
             itemView.findViewById<LinearLayout>(R.id.linear_view)
             itemView.setOnClickListener {
-//                listener?.onItemClick(mlist)
-                println("***here$mlist")
-
+                onItemViewClickListener?.onItemClick(mlist) // обращение к интерфейсу onItemViewClickListener в HomeFragment
             }
         }
     }
 
-    interface OnItemViewClickListener {
-        fun onItemClick(mlist: ItemsViewModel)
-    }
+//    fun bind(weather: Weather) {
+//        itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
+//            weather.city.city
+//        itemView.setOnClickListener {
+//            onItemViewClickListener?.onItemViewClick(weather)
+//        }
+//    }
+
+
+//    interface OnItemViewClickListener {
+//        fun onItemClick(mlist: ItemsViewModel)
+//    }
+
+//    fun fragmentChange(){
+//        val bundle = Bundle()
+//        bundle.putParcelable("dataFromRepository", Repository)
+//        manager.beginTransaction().add(R.id.container, DetailFragment.newInstance(bundle)).addToBackStack("").commit()
+//    }
 
 }

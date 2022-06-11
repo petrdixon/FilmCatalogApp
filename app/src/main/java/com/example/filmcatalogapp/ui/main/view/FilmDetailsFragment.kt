@@ -40,12 +40,13 @@ class FilmDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val repository = arguments?.getParcelable<Repository>(ARG_PARAM1)
-        binding.filmName.text = repository?.nameFilm
-        binding.poster.setImageResource(repository?.poster!!)
-        binding.shortSummary.text = repository.shortSummary
-        binding.fullSummary.text = repository.fullSummary
-        println("*******fromRepository $repository")
 
+        with(binding) {
+            filmName.text = repository?.nameFilm
+            poster.setImageResource(repository?.poster!!)
+            shortSummary.text = repository.shortSummary
+            fullSummary.text = repository.fullSummary
+        }
     }
 
     override fun onDestroyView() {

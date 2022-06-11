@@ -1,9 +1,14 @@
 package com.example.filmcatalogapp.ui.main.view
 
 import android.os.Bundle
+import android.util.Log
+import android.util.Log.INFO
+import android.util.LogPrinter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,6 +19,10 @@ import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
 import com.example.filmcatalogapp.ui.main.model.Repository
 import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
+import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
 
@@ -28,7 +37,8 @@ class HomeFragment : Fragment() {
     private var dataFromRepository: ArrayList<Repository> = ArrayList<Repository>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -38,7 +48,8 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         // подписываюсь на изменения LiveData
-        val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
+        val observer =
+            Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
         viewModel.getData().observe(viewLifecycleOwner, observer)
     }
 
@@ -51,10 +62,21 @@ class HomeFragment : Fragment() {
             this.context,
             LinearLayoutManager.HORIZONTAL, false
         ) // this creates a horizontal layout Manager
+
+        // Задание - Напишите дополнительные extension-функции для Snackbar без action
+        fun Snackbar.own(messange: String): Unit =
+            Snackbar.make(view, messange, Snackbar.LENGTH_LONG).setAction("own action", null).show();
+
+        val button: Button = view.findViewById(R.id.show_snack_bar)
+        button.setOnClickListener {
+            val startSnackBar: Snackbar = Snackbar.make(view, "gg", 10000)
+            startSnackBar.own("final message")
+        }
     }
 
+
     // метод запускается, когда приходят обновленные данные. Тогда обновляется горизонтальный список
-    private fun renderData(data : Any) {
+    private fun renderData(data: Any) {
         Toast.makeText(context, "data", Toast.LENGTH_LONG).show()
 
         dataTopList.clear()
@@ -66,7 +88,7 @@ class HomeFragment : Fragment() {
         }
 
         // в HomeFragment получаю и обрабатываю клики RecyclerView
-        val adapter = CustomAdapter(dataTopList, object : OnItemViewClickListener{
+        val adapter = CustomAdapter(dataTopList, object : OnItemViewClickListener {
             // в CustomAdapter dataTopList становится mList
 
             override fun onItemClick(mlist: ItemsViewModel) {
@@ -86,7 +108,6 @@ class HomeFragment : Fragment() {
             }
         })
         recyclerview.adapter = adapter
-
 
     }
 

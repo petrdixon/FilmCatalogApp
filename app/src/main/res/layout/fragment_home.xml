@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.view.HomeFragment">
 
+    <LinearLayout
+        android:id="@+id/layout_snack_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_snack_bar"
+        android:layout_marginTop="60dp">
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/messageNowPlaying"
         android:layout_width="wrap_content"
@@ -24,11 +35,19 @@
         tools:itemCount="5"
         tools:listitem="@layout/card_view_design" />
 
+    <Button
+        android:id="@+id/show_snack_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show snack bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerview"
+        app:layout_constraintBottom_toBottomOf= "parent" />
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-<!--    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--    app:layout_constraintEnd_toEndOf="parent"-->
-<!--    app:layout_constraintStart_toStartOf="parent"-->
-<!--    app:layout_constraintTop_toTopOf="parent"-->

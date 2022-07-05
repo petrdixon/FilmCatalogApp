@@ -35,17 +35,23 @@
         tools:itemCount="5"
         tools:listitem="@layout/card_view_design" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/messageNowPlaying"
+        tools:itemCount="5"
+        tools:listitem="@layout/card_view_design" />
+
     <Button
         android:id="@+id/show_snack_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Show snack bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerview"
-        app:layout_constraintBottom_toBottomOf= "parent" />
-
-
-
+        app:layout_constraintTop_toBottomOf="@id/recyclerview" />
+<!--    app:layout_constraintBottom_toBottomOf= "parent"-->
 
 
 

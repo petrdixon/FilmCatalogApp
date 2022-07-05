@@ -1,28 +1,30 @@
 package com.example.filmcatalogapp.ui.main.view
 
 import android.os.Bundle
-import android.util.Log
-import android.util.Log.INFO
-import android.util.LogPrinter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmcatalogapp.R
+import com.example.filmcatalogapp.ui.main.model.ForConvertJsonToArray
 import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
 import com.example.filmcatalogapp.ui.main.model.Repository
 import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
-import java.text.SimpleDateFormat
-import java.util.*
+import okhttp3.*
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
 import kotlin.collections.ArrayList
+
 
 class HomeFragment : Fragment() {
 
@@ -34,7 +36,7 @@ class HomeFragment : Fragment() {
     private var dataTopList: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
     private lateinit var viewModel: MainViewModel
 
-    private var dataFromRepository: ArrayList<Repository> = ArrayList<Repository>()
+    private lateinit var dataFromRepository: List<ForConvertJsonToArray>
 
 
     override fun onCreateView(
@@ -45,12 +47,14 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // получаю ViewModel
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         // подписываюсь на изменения LiveData
-        val observer =
-            Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
-        viewModel.getData().observe(viewLifecycleOwner, observer)
+        val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
+        viewModel.getData("top250").observe(viewLifecycleOwner, observer)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,6 +67,7 @@ class HomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL, false
         ) // this creates a horizontal layout Manager
 
+
         // Задание - Напишите дополнительные extension-функции для Snackbar без action
         fun Snackbar.own(messange: String): Unit =
             Snackbar.make(view, messange, Snackbar.LENGTH_LONG).setAction("own action", null).show();
@@ -74,18 +79,20 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     // метод запускается, когда приходят обновленные данные. Тогда обновляется горизонтальный список
     private fun renderData(data: Any) {
         Toast.makeText(context, "data", Toast.LENGTH_LONG).show()
 
-        dataTopList.clear()
-        dataFromRepository.clear()
-        dataFromRepository = data as ArrayList<Repository>
+        // сюда приходит List<ForConvertJsonToArray> такого вида:
+        // [ForConvertJsonToArray(title=The Shawshank Redemption, year=1994, imDbRating=9.2), ForConvertJsonToArray(title=Th
+        dataFromRepository = data as List<ForConvertJsonToArray>
 
-        for (i in dataFromRepository) {
-            dataTopList.add(ItemsViewModel(i.poster, i.nameFilm))
+        // список для RecyclerView, соответствует ItemsViewModel
+        dataTopList.clear()
+        for (i in data) {
+            dataTopList.add(ItemsViewModel( R.drawable.poster_emma, i.title, i.year, i.imDbRating))
         }
+
 
         // в HomeFragment получаю и обрабатываю клики RecyclerView
         val adapter = CustomAdapter(dataTopList, object : OnItemViewClickListener {
@@ -98,8 +105,8 @@ class HomeFragment : Fragment() {
 
                     // в списке с элементами из 2 переменных, приготовленном для RecyclerView (dataTopList),
                     //  нахожу нажатый элемент, получаю его индекс. По индексу беру из списка
-                    //  Repository (dataFromRepository) и передаю в другой фрагмент
-                    bundle.putParcelable(FilmDetailsFragment.ARG_PARAM1, dataFromRepository[dataTopList.indexOf(mlist)])
+                    //  Repository (dataF*** repositoryromRepository) и передаю в другой фрагмент
+                    bundle.putParcelable(FilmDetailsFragment.ARG_PARAM1, data[dataTopList.indexOf(mlist)])
                     manager.beginTransaction()
                         .replace(R.id.container, FilmDetailsFragment.newInstance(bundle))
                         .addToBackStack("")
@@ -108,12 +115,13 @@ class HomeFragment : Fragment() {
             }
         })
         recyclerview.adapter = adapter
-
     }
 
     interface OnItemViewClickListener { // интерфейс, чтобы передавать данные между адаптером списка и фрагментом
         fun onItemClick(mlist: ItemsViewModel)
     }
+
+
 
 }
 

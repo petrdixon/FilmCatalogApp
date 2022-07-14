@@ -1,28 +1,23 @@
 package com.example.filmcatalogapp.ui.main.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.ui.main.model.ForConvertJsonToArray
+import com.example.filmcatalogapp.ui.main.model.GetInternetStatus
 import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
-import com.example.filmcatalogapp.ui.main.model.Repository
 import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
-import okhttp3.*
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
 import kotlin.collections.ArrayList
 
 
@@ -50,11 +45,9 @@ class HomeFragment : Fragment() {
 
         // получаю ViewModel
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
         // подписываюсь на изменения LiveData
         val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
         viewModel.getData("top250").observe(viewLifecycleOwner, observer)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,6 +69,14 @@ class HomeFragment : Fragment() {
         button.setOnClickListener {
             val startSnackBar: Snackbar = Snackbar.make(view, "gg", 10000)
             startSnackBar.own("final message")
+
+            // ЭКСПЕРИМЕНТ с service
+
+            context?.let {
+                it.startService(Intent(it, GetInternetStatus::class.java).apply {
+                    putExtra("foo", "anyValue")
+                })
+            }
         }
     }
 
@@ -90,9 +91,8 @@ class HomeFragment : Fragment() {
         // список для RecyclerView, соответствует ItemsViewModel
         dataTopList.clear()
         for (i in data) {
-            dataTopList.add(ItemsViewModel( R.drawable.poster_emma, i.title, i.year, i.imDbRating))
+            dataTopList.add(ItemsViewModel(R.drawable.poster_emma, i.title, i.year, i.imDbRating))
         }
-
 
         // в HomeFragment получаю и обрабатываю клики RecyclerView
         val adapter = CustomAdapter(dataTopList, object : OnItemViewClickListener {
@@ -120,7 +120,6 @@ class HomeFragment : Fragment() {
     interface OnItemViewClickListener { // интерфейс, чтобы передавать данные между адаптером списка и фрагментом
         fun onItemClick(mlist: ItemsViewModel)
     }
-
 
 
 }

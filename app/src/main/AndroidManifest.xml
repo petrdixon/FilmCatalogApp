@@ -33,7 +33,6 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <service android:name=".ui.main.model.MainService" />
         <service android:name=".ui.main.model.GetInternetStatus" />
     </application>
 

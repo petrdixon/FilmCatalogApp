@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
+import com.squareup.picasso.Picasso
 
 // адаптер для RecyclerView
 
@@ -22,7 +23,6 @@ HomeFragment.OnItemViewClickListener?) :
         // that is used to hold list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_view_design, parent, false)
-
         return ViewHolder(view)
     }
 
@@ -41,13 +41,14 @@ HomeFragment.OnItemViewClickListener?) :
 
         fun bind(mlist: ItemsViewModel) { // без создания метода bind не удается установить clickListener
             // заполнение карточек картинками и текстом
-            var imageView: ImageView = itemView.findViewById<ImageView>(R.id.imageview)
-            imageView.setImageResource(mlist.image)
-            var titleTextView: TextView = itemView.findViewById<TextView>(R.id.title)
+
+            val imageView: ImageView = itemView.findViewById(R.id.imageview)
+            Picasso.get().load(mlist.image).into(imageView) // загрузка картинки с помощью Picasso
+            val titleTextView: TextView = itemView.findViewById(R.id.title)
             titleTextView.text = mlist.title
-            var yearTextView: TextView = itemView.findViewById<TextView>(R.id.year)
+            val yearTextView: TextView = itemView.findViewById(R.id.year)
             yearTextView.text = mlist.year
-            var ratingTextView: TextView = itemView.findViewById<TextView>(R.id.rating)
+            val ratingTextView: TextView = itemView.findViewById(R.id.rating)
             ratingTextView.text = mlist.rating
 
 

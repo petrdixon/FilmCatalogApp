@@ -1,7 +1,6 @@
 package com.example.filmcatalogapp.ui.main.model
 
 import android.os.Parcelable
-import android.util.Log
 import com.google.gson.GsonBuilder
 import kotlinx.android.parcel.Parcelize
 import okhttp3.OkHttpClient
@@ -21,7 +20,7 @@ data class FilmsFromJson(
     var arrayWithFilms = JSONArray()
     var model: List<ForConvertJsonToArray> = listOf(
         ForConvertJsonToArray
-            ("", "", "", "", "", "", "", "", "", "")
+            ("", "", "", "", "", "", "", "", "","")
     )
     var url = ""
 
@@ -45,19 +44,12 @@ data class FilmsFromJson(
 
                 try {
                     val json = JSONObject(responseData)
-//                    arrayWithFilms = json.getJSONArray("items") // получил массив со списком параметров фильмов
-//                    println("**** in FilmsFromJson " + arrayWithFilms)
-
-                    // преобразование ответа от сервера (JSON) в модель данных (ForConvertJsonToArray)
-//                val gson = GsonBuilder().create()
-//                model = gson.fromJson(arrayWithFilms.toString(), Array<ForConvertJsonToArray>::class.java).toList()
 
                     if (filmID == "top250") {
                         arrayWithFilms = json.getJSONArray("items")
                         // преобразование ответа от сервера (JSON) в модель данных (ForConvertJsonToArray)
                         val gson = GsonBuilder().create()
                         model = gson.fromJson(arrayWithFilms.toString(), Array<ForConvertJsonToArray>::class.java).toList()
-                        println("*** arrayWithFilms1 $arrayWithFilms")
                     } else {
                         arrayWithFilms.put(json)
                         val gson = GsonBuilder().create()

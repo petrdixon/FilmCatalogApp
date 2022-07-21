@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.example.filmcatalogapp.R
 import kotlinx.android.parcel.Parcelize
 
-
+// не используется. Локальное хранилище с первых уроков.
 @Parcelize
 data class Repository(
     val nameFilm: String = "default nameFilm",

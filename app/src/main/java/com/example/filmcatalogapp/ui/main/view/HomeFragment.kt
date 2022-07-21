@@ -1,6 +1,5 @@
 package com.example.filmcatalogapp.ui.main.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmcatalogapp.R
-import com.example.filmcatalogapp.ui.main.model.ForConvertJsonToArray
-import com.example.filmcatalogapp.ui.main.model.GetInternetStatus
-import com.example.filmcatalogapp.ui.main.model.ItemsViewModel
+import com.example.filmcatalogapp.ui.main.model.*
 import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlin.collections.ArrayList
@@ -31,27 +28,19 @@ class HomeFragment : Fragment() {
     private var dataTopList: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
     private lateinit var viewModel: MainViewModel
 
-    private lateinit var dataFromRepository: List<ForConvertJsonToArray>
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        // получаю ViewModel
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // подписываюсь на изменения LiveData
-        val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
-        viewModel.getData("top250").observe(viewLifecycleOwner, observer)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // подписка на изменения LiveData в MainViewModel. Данные приходят из Retrofit
+        val viewModel2 = ViewModelProvider(this).get(MainViewModel::class.java)
+        val observer = Observer<Any> { renderData(it) }
+        viewModel2.getDataTop250Retrofit().observe(viewLifecycleOwner, observer)
 
         // добавление верхнего горизонтального списка
         recyclerview = view.findViewById<RecyclerView>(R.id.recyclerview) // getting the recyclerview by its id
@@ -60,8 +49,7 @@ class HomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL, false
         ) // this creates a horizontal layout Manager
 
-
-        // Задание - Напишите дополнительные extension-функции для Snackbar без action
+        // Домашнее задание - Напишите дополнительные extension-функции для Snackbar без action
         fun Snackbar.own(messange: String): Unit =
             Snackbar.make(view, messange, Snackbar.LENGTH_LONG).setAction("own action", null).show();
 
@@ -69,14 +57,6 @@ class HomeFragment : Fragment() {
         button.setOnClickListener {
             val startSnackBar: Snackbar = Snackbar.make(view, "gg", 10000)
             startSnackBar.own("final message")
-
-            // ЭКСПЕРИМЕНТ с service
-
-            context?.let {
-                it.startService(Intent(it, GetInternetStatus::class.java).apply {
-                    putExtra("foo", "anyValue")
-                })
-            }
         }
     }
 
@@ -84,14 +64,13 @@ class HomeFragment : Fragment() {
     private fun renderData(data: Any) {
         Toast.makeText(context, "data", Toast.LENGTH_LONG).show()
 
-        // сюда приходит List<ForConvertJsonToArray> такого вида:
-        // [ForConvertJsonToArray(title=The Shawshank Redemption, year=1994, imDbRating=9.2), ForConvertJsonToArray(title=Th
-        dataFromRepository = data as List<ForConvertJsonToArray>
+        // сюда приходит список такого вида:
+        // [DataFilms(id=tt0111161, title=The Shawshank Redemption, year=1994, imDbRating=9.2), DataFilms(id=
 
         // список для RecyclerView, соответствует ItemsViewModel
         dataTopList.clear()
-        for (i in data) {
-            dataTopList.add(ItemsViewModel(R.drawable.poster_emma, i.title, i.year, i.imDbRating))
+        for (i in data as List<DataFilms>) {
+            dataTopList.add(ItemsViewModel(i.image, i.title, i.year, i.imDbRating))
         }
 
         // в HomeFragment получаю и обрабатываю клики RecyclerView
@@ -105,7 +84,7 @@ class HomeFragment : Fragment() {
 
                     // в списке с элементами из 2 переменных, приготовленном для RecyclerView (dataTopList),
                     //  нахожу нажатый элемент, получаю его индекс. По индексу беру из списка
-                    //  Repository (dataF*** repositoryromRepository) и передаю в другой фрагмент
+                    //  и передаю в другой фрагмент
                     bundle.putParcelable(FilmDetailsFragment.ARG_PARAM1, data[dataTopList.indexOf(mlist)])
                     manager.beginTransaction()
                         .replace(R.id.container, FilmDetailsFragment.newInstance(bundle))

@@ -1,16 +1,23 @@
 package com.example.filmcatalogapp.ui.main.view
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.filmcatalogapp.R
+import com.example.filmcatalogapp.ui.main.model.ForConvertJsonToArray
+import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+private lateinit var viewModel: MainViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -57,4 +64,20 @@ class FavoritesFragment : Fragment() {
                 }
             }
     }
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        // получаю ViewModel
+//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+//        // подписываюсь на изменения LiveData
+//        val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
+//        viewModel.filmsListFromFunRetrofit().observeForever(observer)
+//
+//    }
+//
+//    private fun renderData(data: Any) {
+//        println("******** in FavoriteFragment/RenderData $data")
+//    }
+
 }

@@ -1,16 +1,11 @@
 package com.example.filmcatalogapp.ui.main.view
 
-import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
-import android.net.ConnectivityManager.CONNECTIVITY_ACTION
-import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -19,8 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.filmcatalogapp.R
+import com.example.filmcatalogapp.ui.main.model.ModelTop250
+import com.example.filmcatalogapp.ui.main.model.FilmsDataRetrofit
 import com.example.filmcatalogapp.ui.main.model.GetInternetStatus
+import com.example.filmcatalogapp.ui.main.model.ModelFilmDetails
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 

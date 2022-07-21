@@ -4,22 +4,18 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ForConvertJsonToArray(
+data class ModelTop250(
+    val items: List<DataFilms>
+):Parcelable
 
+@Parcelize
+data class DataFilms(
     val id: String,
     val title: String,
     val fullTitle: String,
     val year: String,
     val imDbRating: String,
     val crew: String,
-
-    val type: String,
-    val runtimeStr: String,
-    val releaseDate: String,
-    val plot: String,
-
+    val image: String
     ):Parcelable
-
-
-
 

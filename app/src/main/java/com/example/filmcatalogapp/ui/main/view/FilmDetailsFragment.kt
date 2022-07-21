@@ -16,9 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.databinding.FragmentFilmDetailsBinding
+import com.example.filmcatalogapp.ui.main.model.DataFilms
 import com.example.filmcatalogapp.ui.main.model.ForConvertJsonToArray
+import com.example.filmcatalogapp.ui.main.model.ModelFilmDetails
 import com.example.filmcatalogapp.ui.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 
 
 class FilmDetailsFragment : Fragment() {
@@ -26,7 +29,7 @@ class FilmDetailsFragment : Fragment() {
     private var _binding: FragmentFilmDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: MainViewModel
-    private lateinit var dataOneFilmDetails: List<ForConvertJsonToArray>
+    private lateinit var dataOneFilmDetails: List<ModelFilmDetails>
 
     companion object {
         const val ARG_PARAM1 = "filmsBundle"
@@ -53,22 +56,20 @@ class FilmDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         //  получаю краткую инфу об 1 фильме из top250, переданную из HomeFragment через newInstance FilmDetailsFragment
-        val repository = arguments?.getParcelable<Parcelable>(ARG_PARAM1) as ForConvertJsonToArray
+        val repository = arguments?.getParcelable<Parcelable>(ARG_PARAM1) as DataFilms
+        with(binding) {
+            title.text = repository?.title
+            fullTitle.text = repository?.fullTitle
+            Picasso.get().load(repository.image).into(poster) // загрузка картинки с помощью Picasso
+     }
 
         // делаю запрос подробной информации о выбранном фильме
         // получаю ViewModel
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         // подписываюсь на изменения LiveData
         val observer = Observer<Any> { renderData(it) } // renderData(it) - метод, который выполняется при изменении данных
-        viewModel.getData(repository?.id).observeForever(observer) // передаю ID фильма
-
-        with(binding) {
-            title.text = repository?.title
-            fullTitle.text = repository?.fullTitle
-            poster.setImageResource(R.drawable.poster_emma) // заглушка. загрузка картинки из API будет сделана на след уроках
-        }
+        viewModel.getDataFilmDetailsRetrofit(repository?.id).observeForever(observer) // передаю ID фильма
     }
 
     override fun onDestroyView() {
@@ -77,25 +78,13 @@ class FilmDetailsFragment : Fragment() {
     }
 
     private fun renderData(data: Any) {
-
-        if (data !is Boolean) {
-            // сюда приходит List<ForConvertJsonToArray> такого вида:
-            // [ForConvertJsonToArray(title=The Shawshank Redemption, year=1994, imDbRating=9.2), ForConvertJsonToArray(title=Th
-            dataOneFilmDetails = data as List<ForConvertJsonToArray>
-            var readyData = dataOneFilmDetails[0]
-
-            with(binding) {
-                type.text = readyData.type
-                runtimeStr.text = readyData.runtimeStr
-                releaseDate.text = readyData.releaseDate
-                plot.text = readyData.plot
-            }
-        }
-    }
-
-    private fun getInternetStatus(data: Any) {
-        if (data is Boolean) {
-            println("********* get Internet Status $data")
+        // сюда приходит ModelFilmDetails такого вида: ModelFilmDetails(id=tt0068646, title=The Godfather,
+        data as ModelFilmDetails
+        with(binding) {
+            type.text = data.type
+            runtimeStr.text = data.runtimeStr
+            releaseDate.text = data.releaseDate
+            plot.text = data.plot
         }
     }
 }

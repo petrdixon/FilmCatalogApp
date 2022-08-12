@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.filmcatalogapp.ui.main.model.*
+import com.example.filmcatalogapp.ui.main.model.app.App
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,7 +14,7 @@ class MainViewModel(
     private val liveDataToObserve: MutableLiveData<Any> = MutableLiveData()
 ) : ViewModel() {
 
-//    Получение через OkHTTP. Не используется, переделал на RetroFit
+    //    Получение через OkHTTP. Не используется, переделал на RetroFit
     fun getData(filmID: String): LiveData<Any> {
         liveDataToObserve.value = FilmsFromJson(filmID).getAllFilms()
         return liveDataToObserve
@@ -26,6 +27,7 @@ class MainViewModel(
                 override fun onFailure(call: Call<ModelTop250>, t: Throwable) {
                     println("*** in MainViewModel onFailure $t")
                 }
+
                 override fun onResponse(call: Call<ModelTop250>, response: Response<ModelTop250>) {
                     val listDataFilms = response.body()?.items
                     liveDataToObserve.value = listDataFilms!!
@@ -36,7 +38,7 @@ class MainViewModel(
     }
 
     // Получение информации об одном фильме
-    fun getDataFilmDetailsRetrofit(filmID: String): LiveData<Any>{
+    fun getDataFilmDetailsRetrofit(filmID: String): LiveData<Any> {
         FilmsDataRetrofit().getFilmDetailsList(
             filmID,
             object : Callback<ModelFilmDetails> {
@@ -51,6 +53,11 @@ class MainViewModel(
             }
         )
         return liveDataToObserve
+    }
+
+    // передаю текст заметки о фильме для сохранения в БД к определенному ID фильма
+    fun saveNoteInDB(filmId: String, textNote: String) {
+        App.getInterfaceDao().updateNote(filmId, textNote)
     }
 
     private fun getDataFromLocalSource() { // метод, получающий данные из локального хранилища

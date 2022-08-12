@@ -14,6 +14,9 @@ data class ModelFilmDetails(
     val runtimeStr: String,
     val releaseDate: String,
     val plot: String,
-    val image: String
+    val image: String,
+
+    var noteAboutFilm: String,
+    var dateTimeRequest: String
     ):Parcelable
 

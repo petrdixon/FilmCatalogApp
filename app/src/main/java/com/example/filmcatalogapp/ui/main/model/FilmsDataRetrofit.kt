@@ -27,5 +27,6 @@ class FilmsDataRetrofit {
     fun getFilmDetailsList(filmID: String, callback: Callback<ModelFilmDetails>) {
         filmsApi.getFilmDetails(filmID).enqueue(callback)
     }
+
 }
 

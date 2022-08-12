@@ -1,5 +1,6 @@
 package com.example.filmcatalogapp.ui.main.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // подписка на изменения LiveData в MainViewModel. Данные приходят из Retrofit
         val viewModel2 = ViewModelProvider(this).get(MainViewModel::class.java)
         val observer = Observer<Any> { renderData(it) }
@@ -62,15 +64,15 @@ class HomeFragment : Fragment() {
 
     // метод запускается, когда приходят обновленные данные. Тогда обновляется горизонтальный список
     private fun renderData(data: Any) {
-        Toast.makeText(context, "data", Toast.LENGTH_LONG).show()
 
-        // сюда приходит список такого вида:
-        // [DataFilms(id=tt0111161, title=The Shawshank Redemption, year=1994, imDbRating=9.2), DataFilms(id=
+        // получаю значение rating из sharedPreferences. Если файла нет, возвращается 100
+        var ratingValue = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(RATING_VALUE_KEY, "100")
 
         // список для RecyclerView, соответствует ItemsViewModel
         dataTopList.clear()
         for (i in data as List<DataFilms>) {
-            dataTopList.add(ItemsViewModel(i.image, i.title, i.year, i.imDbRating))
+            if (i.imDbRating.toFloat() >= ratingValue!!.toFloat()) // фильтр - показываем фильмы больше настроенного рейтинга
+                dataTopList.add(ItemsViewModel(i.image, i.title, i.year, i.imDbRating))
         }
 
         // в HomeFragment получаю и обрабатываю клики RecyclerView
@@ -99,8 +101,6 @@ class HomeFragment : Fragment() {
     interface OnItemViewClickListener { // интерфейс, чтобы передавать данные между адаптером списка и фрагментом
         fun onItemClick(mlist: ItemsViewModel)
     }
-
-
 }
 
 

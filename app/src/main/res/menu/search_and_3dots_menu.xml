@@ -13,4 +13,8 @@
         android:id="@+id/firstItem"
         android:title="Настройки" />
 
+    <item
+        android:id="@+id/getContactsItem"
+        android:title="Контакты" />
+
 </menu>

@@ -78,8 +78,6 @@ class FilmDetailsFragment : Fragment() {
                 viewModel.saveNoteInDB(repository.id, filmNote.text.toString())
             }.start()
         }
-
-
     }
 
     override fun onDestroyView() {

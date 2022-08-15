@@ -1,15 +1,21 @@
 package com.example.filmcatalogapp.ui.main.view
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -26,6 +32,16 @@ class MainActivity : AppCompatActivity() {
             intent.getBooleanExtra("foo", false)?.let {
                 if (!it) Toast.makeText(baseContext, "No internet", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+    // для получения контактов с телефона
+    private val permissionResult = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        if (result) {
+            // что делаем когда permission получен
+            getContact()
+        } else {
+            // что делаем если не получен
+            Toast.makeText(baseContext, "Нет разрешения на получение котактов", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -48,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                     IntentFilter("foo")
                 )
         }
-
 
         // при запуске приложения устанавливаем HomeFragment
         if (savedInstanceState == null) {
@@ -116,8 +131,47 @@ class MainActivity : AppCompatActivity() {
                 loadFragment(SettingsFragment()) // при нажатии Settings открываю фрагмент с настройками
                 true
             }
+            // получение и вывод списка контактов
+            R.id.getContactsItem -> {
+                permissionResult.launch(Manifest.permission.READ_CONTACTS)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+
+    }
+
+    // получение контактов с телефона
+    @SuppressLint("Range")
+    private fun getContact() {
+        // получили курсор
+        contentResolver
+        val cursor: Cursor? = contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            null,
+            null,
+            null,
+            ContactsContract.Contacts.DISPLAY_NAME
+        )
+        val contacts = mutableListOf<String>()
+        // установили курсор на позицию 1, пробегаем циклом по контактам в телефоне, имя из контакта добавляем в список contacts
+        cursor?.let {
+            for (i in 0..cursor.count) {
+                if (cursor.moveToPosition(i)) {
+                    val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                    contacts.add(name)
+                }
+            }
+        }
+
+        // передача списка контактов в RatingFragment и показ этого фрагмента
+        val bundle = Bundle()
+        bundle.putStringArrayList(RatingFragment.ARG_PARAM1, contacts as ArrayList)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, RatingFragment.newInstance(bundle))
+            .addToBackStack("")
+            .commitAllowingStateLoss()
+
     }
 
     override fun onDestroy() {
@@ -127,6 +181,8 @@ class MainActivity : AppCompatActivity() {
         }
         super.onDestroy()
     }
+
+
 }
 
 

@@ -15,13 +15,14 @@ import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.filmcatalogapp.R
 import com.example.filmcatalogapp.ui.main.model.GetInternetStatus
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     // для получения контактов с телефона
     private val permissionResult = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         if (result) {
@@ -109,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    // создание меню
+    // создание верхнего меню
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.search_and_3dots_menu, menu)

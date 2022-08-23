@@ -8,10 +8,10 @@
         android:id="@+id/favorites"
         android:enabled="true"
         android:icon="@drawable/favorites"
-        android:title="Favorites"/>
+        android:title="Maps"/>
     <item
         android:id="@+id/ratings"
         android:enabled="true"
         android:icon="@drawable/ratings"
-        android:title="Ratings"/>
+        android:title="Contacts"/>
 </menu>

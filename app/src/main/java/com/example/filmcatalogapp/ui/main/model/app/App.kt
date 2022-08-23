@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.example.filmcatalogapp.ui.main.model.room.FilmDataBase
 import com.example.filmcatalogapp.ui.main.model.room.InterfaceDao
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 
 // Нужно прописать в манифесте
 // В классе App сформируем базу данных и метод получения DAO.
@@ -12,6 +14,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         appInstance = this
+
+
     }
     companion object {
         private var appInstance: App? = null
